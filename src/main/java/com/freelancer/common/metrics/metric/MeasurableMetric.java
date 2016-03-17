@@ -1,8 +1,8 @@
-package com.freelancer.common.metrics;
+package com.freelancer.common.metrics.metric;
 
 import com.freelancer.common.MonitorSensor;
 import com.freelancer.common.cache.LRUMapCache;
-import com.freelancer.common.metrics.parser.MeasureReadableParser;
+import com.freelancer.common.metrics.render.MeasureReadableRender;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  *
  * Metric basic templates containing all the common information
  */
-public abstract class MeasurableMetric<T> {
+public abstract class MeasurableMetric {
 
     private static final String DEFAULT_METRIC_NAME = "MetricNoName";
     private static final Integer DEFAULT_SAMPLE_INTERVAL = 5;
@@ -23,24 +23,25 @@ public abstract class MeasurableMetric<T> {
     private Integer delay = DEFAULT_SAMPLE_DELAY;
     // Information gather interval
     private Integer interval;
+    // Current data stuff
     private Object dataStuff;
     // Recent 100 sample data for later graph
-    private LRUMapCache<Long, T> stats = new LRUMapCache<>(100);
-    private MeasureReadableParser<T> measureReadableParser;
+    private LRUMapCache<Long, Object> stats = new LRUMapCache<>(100);
+    private MeasureReadableRender measureReadableRender;
     private MonitorSensor monitorSensor;
 
-    public MeasurableMetric(MonitorSensor monitorSensor, MeasureReadableParser<T> measureReadableParser) {
-        this(DEFAULT_METRIC_NAME, monitorSensor, measureReadableParser);
+    public MeasurableMetric(MonitorSensor monitorSensor, MeasureReadableRender measureReadableRender) {
+        this(DEFAULT_METRIC_NAME, monitorSensor, measureReadableRender);
     }
 
-    public MeasurableMetric(String metricName, MonitorSensor monitorSensor, MeasureReadableParser<T> measureReadableParser) {
-        this(metricName, monitorSensor, measureReadableParser, DEFAULT_SAMPLE_INTERVAL);
+    public MeasurableMetric(String metricName, MonitorSensor monitorSensor, MeasureReadableRender measureReadableRender) {
+        this(metricName, monitorSensor, measureReadableRender, DEFAULT_SAMPLE_INTERVAL);
     }
 
-    public MeasurableMetric(String metricName, MonitorSensor monitorSensor, MeasureReadableParser<T> measureReadableParser, int interval) {
+    public MeasurableMetric(String metricName, MonitorSensor monitorSensor, MeasureReadableRender measureReadableRender, int interval) {
         this.metricName = metricName;
         this.monitorSensor = monitorSensor;
-        this.measureReadableParser = measureReadableParser;
+        this.measureReadableRender = measureReadableRender;
         this.interval = interval;
     }
 
@@ -56,7 +57,7 @@ public abstract class MeasurableMetric<T> {
             @Override
             public void run() {
                 dataStuff = sample();
-                T object = measureReadableParser.parseStuff(dataStuff);
+                Object object = measureReadableRender.renderStuff(dataStuff);
                 if (object != null) {
                     stats.put(System.currentTimeMillis(), object);
                 }

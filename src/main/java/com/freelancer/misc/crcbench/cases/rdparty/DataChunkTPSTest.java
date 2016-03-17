@@ -1,5 +1,8 @@
 package com.freelancer.misc.crcbench.cases.rdparty;
 
+import com.freelancer.common.MonitorPlugin;
+import com.freelancer.common.MonitorSensor;
+import com.freelancer.common.metrics.metric.vmstat.VMStatMeasurableMetric;
 import com.freelancer.misc.crcbench.source.Crc32;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -16,6 +19,8 @@ public class DataChunkTPSTest {
     private static final int BYTE_LENGTH = 1 * 1024 * 1024;
     private static ByteBuffer byteBuffer;
 
+    private static MonitorPlugin monitorPlugin;
+
     static {
         // Run after the class loader initialization
         // Note that all the content is random in these spaces
@@ -23,6 +28,11 @@ public class DataChunkTPSTest {
     }
 
     public static void main(String []args) throws Exception {
+        MonitorSensor monitorSensor = new MonitorSensor();
+        monitorSensor.registerMetrics(new VMStatMeasurableMetric(monitorSensor));
+        monitorPlugin = new MonitorPlugin(monitorSensor);
+        new Thread(monitorPlugin).start();
+
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
@@ -32,7 +42,7 @@ public class DataChunkTPSTest {
             crc32.update(byteBuffer.array(), 0, BYTE_LENGTH);
             crc32.getValue();
 
-            if (index % 1000 == 0) {
+            if (index % 10000 == 0) {
                 System.err.println("Avg time consumption should be : " + (System.currentTimeMillis() - lastWaterMark) / 1000.000);
                 lastWaterMark = System.currentTimeMillis();
             }

@@ -31,5 +31,7 @@ public class ThroughputTest {
         stopWatch.stop();
 
         System.err.println(WHOLE_ITERATION * 1000 / (stopWatch.getTime()));
+
+
     }
 }

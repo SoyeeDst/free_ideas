@@ -1,14 +1,14 @@
-package com.freelancer.common.metrics.parser;
+package com.freelancer.common.metrics.render;
 
 /**
  * Created by Soyee.Deng on 2016/3/17.
  */
-public interface MeasureReadableParser<T> {
+public interface MeasureReadableRender {
 
     /**
      * Converter to parse raw data towards indicated Type
      * @param rawStuff
      * @return
      */
-    public T parseStuff(Object rawStuff);
+    public Object renderStuff(Object rawStuff);
 }
