@@ -45,6 +45,11 @@ public abstract class MeasurableMetric {
         this.interval = interval;
     }
 
+    /**
+     * Explicitly set sampling delay, if not, default delay will be applied.
+     * @param delay
+     * @return
+     */
     public MeasurableMetric setDelay(Integer delay) {
         this.delay = delay;
         return this;
