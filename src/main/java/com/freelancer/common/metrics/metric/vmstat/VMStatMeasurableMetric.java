@@ -2,12 +2,9 @@ package com.freelancer.common.metrics.metric.vmstat;
 
 import com.freelancer.common.MonitorSensor;
 import com.freelancer.common.metrics.metric.MeasurableMetric;
-import com.freelancer.common.metrics.render.MeasureReadableRender;
-import com.freelancer.common.metrics.render.VMDataReadableRender;
 import com.freelancer.common.metrics.render.factory.MeasureReadableRenderFactory;
 import com.freelancer.common.metrics.vo.VMData;
 import com.sun.management.OperatingSystemMXBean;
-import com.sun.management.ThreadMXBean;
 
 import java.lang.management.ManagementFactory;
 
